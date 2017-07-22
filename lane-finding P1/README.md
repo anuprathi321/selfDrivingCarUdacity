@@ -68,8 +68,8 @@ Possible improvements:
 
 Link to youtube vidoes:
 ---
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=PNPoaVTAl9U
-" target="_blank"><img src="http://img.youtube.com/vi/PNPoaVTAl9U/0.jpg" 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=A5VDD83KVEk
+" target="_blank"><img src="http://img.youtube.com/vi/A5VDD83KVEk/0.jpg" 
 alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=g3-OuvRvaBQ
