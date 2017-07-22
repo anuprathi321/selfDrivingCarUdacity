@@ -17,25 +17,29 @@ Gray Image
 ---
 grayScale function converts rgb image to gray scale image. It first converts image to HSV color space, extracts yellow-white region from image and then convert image to gray scale.
 output of grayScale:
+
 <img src="test_images_output/gray" width="480" alt="Combined Image" />
 
 Blur Image
 ---
 To remove noise from image, Gaussian fileter with kernel size 3 is used to smooth image.
 output of gaussian_blur:
+
 <img src="test_images_output/blur_gray" width="480" alt="Combined Image" />
 
 Detecting edges in image
 ---
 Canny operator is used to detect edges im image. Canny operator performs better than sobel operator.
 output of Canny operator:
+
 <img src="test_images_output/edges" width="480" alt="Combined Image" />
 
 Region of interest:
 ---
 Use polygon of appropriate dimension to select region of interest, currently region of interest is hardcoded. 
 output of ROI:
-<img src="test_images_output/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
+
+<img src="test_images_output/roi" width="480" alt="Combined Image" />
 
 Hough lines from edges:
 ---
@@ -43,11 +47,13 @@ Hough function transforms all points in edge image to line in hough space, For e
 
 Threshold lines horizontal and vertical lines using slope of lines. Merge all lines whose slope is less than 0(left line) and all lines whose slope is greater than 0(right line). Take average of end points of left and right lines which give us new center for our left and right line. Maintain history of last n lines and centers to avoid bumpiness from frame to frame.
 output of Hough line:
+
 <img src="test_images_output/line_image" width="480" alt="Combined Image" />
 
 Merge original image and line image:
 ---
 Output of blended image:
+
 <img src="test_images_output/output" width="480" alt="Combined Image" />
 
 Potential shortcomings:
