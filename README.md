@@ -1,7 +1,5 @@
 # **Finding Lane Lines on the Road** 
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-<img src="examples/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
 
 Overview
 ---
@@ -10,44 +8,54 @@ When we drive, we use our eyes to decide where to go.  The lines on the road tha
 
 In this project you will detect lane lines in images using Python and OpenCV.  OpenCV means "Open-Source Computer Vision", which is a package that has many useful tools for analyzing images.  
 
-To complete the project, two files will be submitted: a file containing project code and a file containing a brief write up explaining your solution. We have included template files to be used both for the [code](https://github.com/udacity/CarND-LaneLines-P1/blob/master/P1.ipynb) and the [writeup](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md).The code file is called P1.ipynb and the writeup template is writeup_template.md 
-
-To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
-
-
-Creating a Great Writeup
+Input image
 ---
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
-
-1. Describe the pipeline
-
-2. Identify any shortcomings
-
-3. Suggest possible improvements
-
-We encourage using images in your writeup to demonstrate how your pipeline works.  
-
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
+<img src="test_images_output/test_img" width="480" alt="Combined Image" />
 
 
-The Project
+Gray Image
 ---
+grayScale function converts rgb image to gray scale image. It first converts image to HSV color space, extracts yellow-white region from image and then convert image to gray scale.
+output of grayScale:
+<img src="test_images_output/gray" width="480" alt="Combined Image" />
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
+Blur Image
+---
+To remove noise from image, Gaussian fileter with kernel size 3 is used to smooth image.
+output of gaussian_blur:
+<img src="test_images_output/blur_gray" width="480" alt="Combined Image" />
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/83ec35ee-1e02-48a5-bdb7-d244bd47c2dc/lessons/8c82408b-a217-4d09-b81d-1bda4c6380ef/concepts/4f1870e0-3849-43e4-b670-12e6f2d4b7a7) if you haven't already.
+Detecting edges in image
+---
+Canny operator is used to detect edges im image. Canny operator performs better than sobel operator.
+output of Canny operator:
+<img src="test_images_output/edges" width="480" alt="Combined Image" />
 
-**Step 2:** Open the code in a Jupyter Notebook
+Region of interest:
+---
+Use polygon of appropriate dimension to select region of interest, currently region of interest is hardcoded. 
+output of ROI:
+<img src="test_images_output/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out <A HREF="https://www.packtpub.com/books/content/basics-jupyter-notebook-and-python" target="_blank">Cyrille Rossant's Basics of Jupyter Notebook and Python</A> to get started.
+Hough lines from edges:
+---
+Hough function transforms all points in edge image to line in hough space, For each line count is increamented in approriate bins in hough accumulator, whichever bin has maximum votes we select that point in hough space. Since Point in Hough space corresponds to line in image space, we select line with maximum votes.
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+Threshold lines horizontal and vertical lines using slope of lines. Merge all lines whose slope is less than 0(left line) and all lines whose slope is greater than 0(right line). Take average of end points of left and right lines which give us new center for our left and right line. Maintain history of last n lines and centers to avoid bumpiness from frame to frame.
+output of Hough line:
+<img src="test_images_output/line_image" width="480" alt="Combined Image" />
 
-`> jupyter notebook`
+Merge original image and line image:
+---
+Output of blended image:
+<img src="test_images_output/output" width="480" alt="Combined Image" />
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+Potential shortcomings:
+---
+1. ROI is hardcoded and works fine for test videos, it should be computed dynamically.
+2. Output lines are straight lines, might not work well on curvy road. Using second order polynomial function for road fitting will give better results.
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
-
+Possible improvements:
+---
+1. Dynamically compute ROI
+2. Use second order line fitting equation
