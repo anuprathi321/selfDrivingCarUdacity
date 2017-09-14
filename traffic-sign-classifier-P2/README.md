@@ -1,54 +1,122 @@
-## Project: Build a Traffic Sign Recognition Program
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+#**Traffic Sign Recognition** 
 
 Overview
 ---
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to classify traffic signs. You will train and validate a model so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After the model is trained, you will then try out your model on images of German traffic signs that you find on the web.
+Detecting correct traffic sign is one of the key aspect of self driving car. In this project I have build traffic sign classifier using convolutional neural networks to train, validate and test German traffic signs. Nvidia GTX1080 card is used to train, validate and test data.
 
-We have included an Ipython notebook that contains further instructions 
-and starter code. Be sure to download the [Ipython notebook](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb). 
-
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
-
-To meet specifications, the project will require submitting three files: 
-* the Ipython notebook with the code
-* the code exported as an html file
-* a writeup report either as a markdown or pdf file 
-
-Creating a Great Writeup
----
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/481/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
-
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
-
-The Project
----
 The goals / steps of this project are the following:
-* Load the data set
+* Load the data set (see below for links to the project data set)
 * Explore, summarize and visualize the data set
 * Design, train and test a model architecture
 * Use the model to make predictions on new images
 * Analyze the softmax probabilities of the new images
 * Summarize the results with a written report
 
-### Dependencies
-This lab requires:
 
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+[//]: # (Image References)
 
-The lab environment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
+[image1]: ./signs.png "Signs"
+[image2]: ./original_dataset.png "Dataset distribution "
+[image3]: ./augumented_dataset.png "Augumented dataset distribution"
+[image4]: ./images_from_web.png "Images from web"
 
-### Dataset and Repository
+Dataset Summary  and Exploration
+---
+[German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset) is used in this project. Below is summary of dataset:
+* The size of training set is 34799
+* The size of the validation set is 4410
+* The size of test set is 12630
+* The shape of a traffic sign image is (32, 32, 3)
+* The number of unique classes/labels in the data set is 43
 
-1. Download the data set. The classroom has a link to the data set in the "Project Instructions" content. This is a pickled dataset in which we've already resized the images to 32x32. It contains a training, validation and test set.
-2. Clone the project, which contains the Ipython notebook and the writeup template.
-```sh
-git clone https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project
-cd CarND-Traffic-Sign-Classifier-Project
-jupyter notebook Traffic_Sign_Classifier.ipynb
-```
+Visualization of dataset
+---
+Dataset distribution for 43 images is ![alt text][image2]. 
 
-### Requirements for Submission
-Follow the instructions in the `Traffic_Sign_Classifier.ipynb` notebook and write the project report using the writeup template as a guide, `writeup_template.md`. Submit the project code and writeup document.
+Design  Test model architechture
+---
+Dataset was augumented to make equal distribution for training examples. Affine transformations: rotation, translation and Shear translation is preformed on original dataset to generate more images. Augumented dataset contains 3000 images per label. ![alt text][image3]
+
+Preprocessing steps included data augumentation, converting augumented data to gray scale and then normalizing data. 
+Summary of dataset after pre-processing:
+* The size of training set is 94201
+* The shape of a traffic sign image is (32, 32, 1)
+
+Architechture:
+
+---
+| Layer         		|     Description	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Input         		| 32x32x1 RGB image   							| 
+| Convolution 5x5     	| 1x1 stride, Valid padding, outputs 28x28x16 	|
+| RELU					|												|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x16 				|
+| Convolution 5x5	    | 1x1 stride, Valid padding, outputs 10x10x32     									|
+| RELU					|												|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x32 				|
+| Fully connected		| input: 800, output: 120        									|
+| RELU					|												|
+| Dropout       |                       |                
+| Fully connected		| input: 120, output: 120        									|
+| RELU					|												|
+| Dropout       |                       |                
+| Fully connected		| input: 120, output: 43  									|
+| Softmax				| etc.        									|
+|						|												|
+
+Training model
+---
+Input for training is normalized gray scale images. Adam optimizer is used to reduce loss, batch size for training is set to 256, Epochs for training is 100, learning rate is set to 0.0005.
+ 
+Iterative approach
+---
+I used LeNet as base model and build final solution on top of it iteratively. With Vanila LeNet model validation accuracy was around 92%. Converting images from RGB to gray scale improved validation accuracy which tells color is not important factor in recognizing signs. Model was made wider and deeper by increasing features in fully connected layer and adding one more fully connected layer. With this approach validation accuracy increased till 60 Epochs and reached 94 but it started decreasing later, clearly model was overfit. To avoid overfitting L2 regularization and dropout was introduced. I choosed to use dropout on fully connected layers with keep probability 0.7 and L2 regularization on all the weights and biases of convolutional layers and fully connected layers. 
+
+Below are accuracy for final model:
+Training set accuracy: 1.0
+Validation set accuracy: 97.00
+Test set accuracy: 94.76
+ 
+###Test a Model on New Images
+
+Here are 9 German traffic signs that I found on the web:
+
+![alt text][image4]
+
+When tested I found accuracy of 77% for 9 images. 2 images were wrongly classified. Below are results for each image:
+
+Description: Roundabout mandatory Actual value: 40, predicted value: 40
+Description: Speed limit (20km/h)  Actual value: 0, predicted value: 1
+Description: General caution Actual value: 18, predicted value: 18
+Description: Keep right Actual value: 38, predicted value: 38
+Description: Speed limit (60km/h) Actual value: 3, predicted value: 1
+Description: Stop Actual value: 14, predicted value: 14
+Description: Go straight or right Actual value: 36, predicted value: 36
+Description: No entry Actual value: 17, predicted value: 17
+Description: Yield Actual value: 13, predicted value: 13
+
+As seen from above results both the spped limit signs were wrongly classified. Reason I guess is speed limit sign images from web are not correctly cropped and include background information as well.
+
+Below is top 5 softmax probabilities for each image:
+[[  9.997e-01   3.197e-04   6.043e-06   1.195e-14   5.023e-18]
+ [  5.517e-01   4.478e-01   5.385e-04   1.133e-10   2.224e-11]
+ [  1.000e+00   5.767e-23   6.866e-30   5.923e-30   3.020e-30]
+ [  1.000e+00   0.000e+00   0.000e+00   0.000e+00   0.000e+00]
+ [  9.997e-01   3.226e-04   8.868e-07   3.522e-09   2.317e-09]
+ [  1.000e+00   6.141e-06   9.875e-07   6.918e-07   3.828e-07]
+ [  1.000e+00   3.424e-21   1.009e-21   2.917e-22   8.215e-26]
+ [  1.000e+00   7.392e-30   1.128e-30   4.141e-33   7.132e-34]
+ [  1.000e+00   0.000e+00   0.000e+00   0.000e+00   0.000e+00]]
+
+Labels corresponding to top 5 softmax probabilities:
+[[40 16  7 30 28]
+ [ 1  0 28 32 38]
+ [18 26 37  0 27]
+ [38  0  1  2  3]
+ [ 1 18 34 38  0]
+ [14 33 25  4 39]
+ [36 35 26 22 15]
+ [17 26 32  0  8]
+ [13  0  1  2  3]]
+ 
+
