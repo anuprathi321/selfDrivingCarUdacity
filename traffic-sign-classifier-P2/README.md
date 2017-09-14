@@ -17,7 +17,7 @@ The goals / steps of this project are the following:
 
 [image1]: ./signs.png "Signs"
 [image2]: ./original_dataset.png "Dataset distribution "
-[image3]: ./augumented_dataset.png "Augumented dataset distribution"
+[image3]: ./augmented_dataset.png "Augumented dataset distribution"
 [image4]: ./images_from_web.png "Images from web"
 
 Dataset Summary  and Exploration
@@ -35,7 +35,8 @@ Dataset distribution for 43 images is ![alt text][image2].
 
 Design  Test model architechture
 ---
-Dataset was augumented to make equal distribution for training examples. Affine transformations: rotation, translation and Shear translation is preformed on original dataset to generate more images. Augumented dataset contains 3000 images per label. ![alt text][image3]
+Dataset was augumented to make equal distribution for training examples. Affine transformations: rotation, translation and Shear translation is preformed on original dataset to generate more images. Augumented dataset contains 3000 images per label. 
+![alt text][image3]
 
 Preprocessing steps included data augumentation, converting augumented data to gray scale and then normalizing data. 
 Summary of dataset after pre-processing:
@@ -56,13 +57,13 @@ Architechture:
 | Max pooling	      	| 2x2 stride,  outputs 5x5x32 				|
 | Fully connected		| input: 800, output: 120        									|
 | RELU					|												|
-| Dropout       |                       |                
+| Dropout       |    keep_prob:0.7                  |                
 | Fully connected		| input: 120, output: 120        									|
 | RELU					|												|
-| Dropout       |                       |                
+| Dropout       |  keep_prob: 0.7                     |                
 | Fully connected		| input: 120, output: 43  									|
-| Softmax				| etc.        									|
-|						|												|
+| L2 regularization |          |
+| Softmax				|         									|
 
 Training model
 ---
@@ -79,44 +80,48 @@ Test set accuracy: 94.76
  
 ###Test a Model on New Images
 
-Here are 9 German traffic signs that I found on the web:
+Here are 9 German traffic signs that I found on the web. All the 9 images are cropped to 32x32, converted to gray scale and then normalized before testing, below is gray scale output of signs from web:
 
 ![alt text][image4]
 
 When tested I found accuracy of 77% for 9 images. 2 images were wrongly classified. Below are results for each image:
 
-Description: Roundabout mandatory Actual value: 40, predicted value: 40
-Description: Speed limit (20km/h)  Actual value: 0, predicted value: 1
-Description: General caution Actual value: 18, predicted value: 18
-Description: Keep right Actual value: 38, predicted value: 38
-Description: Speed limit (60km/h) Actual value: 3, predicted value: 1
-Description: Stop Actual value: 14, predicted value: 14
-Description: Go straight or right Actual value: 36, predicted value: 36
-Description: No entry Actual value: 17, predicted value: 17
-Description: Yield Actual value: 13, predicted value: 13
+---
+| Description         		|     Actual value	        					|  Predicted value |
+|:---------------------:|:---------------------------------------------:| 
+| Roundabout mandatory         		| 40   							| 40 |
+| Speed limit (20km/h)         		| 0   							| 1 |
+| General caution         		| 18   							| 18 |
+| Keep right Actual        		| 38   							| 38 |
+| Speed limit (60km/h)         		| 3   							| 1 |
+| Stop Actual         		| 14   							| 14 |
+| Go straight or right Actual value         		| 36   							| 36 |
+| No entry Actual         		| 17   							| 17 |
+| Yield Actual        		| 13   							| 13 |
+
 
 As seen from above results both the spped limit signs were wrongly classified. Reason I guess is speed limit sign images from web are not correctly cropped and include background information as well.
 
-Below is top 5 softmax probabilities for each image:
-[[  9.997e-01   3.197e-04   6.043e-06   1.195e-14   5.023e-18]
- [  5.517e-01   4.478e-01   5.385e-04   1.133e-10   2.224e-11]
- [  1.000e+00   5.767e-23   6.866e-30   5.923e-30   3.020e-30]
- [  1.000e+00   0.000e+00   0.000e+00   0.000e+00   0.000e+00]
- [  9.997e-01   3.226e-04   8.868e-07   3.522e-09   2.317e-09]
- [  1.000e+00   6.141e-06   9.875e-07   6.918e-07   3.828e-07]
- [  1.000e+00   3.424e-21   1.009e-21   2.917e-22   8.215e-26]
- [  1.000e+00   7.392e-30   1.128e-30   4.141e-33   7.132e-34]
- [  1.000e+00   0.000e+00   0.000e+00   0.000e+00   0.000e+00]]
+Below is top 5 softmax probabilities for each image: <br/>
+[[  9.997e-01   3.197e-04   6.043e-06   1.195e-14   5.023e-18]<br/>
+ [  5.517e-01   4.478e-01   5.385e-04   1.133e-10   2.224e-11]<br/>
+ [  1.000e+00   5.767e-23   6.866e-30   5.923e-30   3.020e-30]<br/>
+ [  1.000e+00   0.000e+00   0.000e+00   0.000e+00   0.000e+00]<br/>
+ [  9.997e-01   3.226e-04   8.868e-07   3.522e-09   2.317e-09]<br/>
+ [  1.000e+00   6.141e-06   9.875e-07   6.918e-07   3.828e-07]<br/>
+ [  1.000e+00   3.424e-21   1.009e-21   2.917e-22   8.215e-26]<br/>
+ [  1.000e+00   7.392e-30   1.128e-30   4.141e-33   7.132e-34]<br/>
+ [  1.000e+00   0.000e+00   0.000e+00   0.000e+00   0.000e+00]]<br/>
 
-Labels corresponding to top 5 softmax probabilities:
-[[40 16  7 30 28]
- [ 1  0 28 32 38]
- [18 26 37  0 27]
- [38  0  1  2  3]
- [ 1 18 34 38  0]
- [14 33 25  4 39]
- [36 35 26 22 15]
- [17 26 32  0  8]
- [13  0  1  2  3]]
+Labels corresponding to top 5 softmax probabilities:<br/>
+[[40 16  7 30 28]<br/>
+ [ 1  0 28 32 38]<br/>
+ [18 26 37  0 27]<br/>
+ [38  0  1  2  3]<br/>
+ [ 1 18 34 38  0]<br/>
+ [14 33 25  4 39]<br/>
+ [36 35 26 22 15]<br/>
+ [17 26 32  0  8]<br/>
+ [13  0  1  2  3]]<br/>
  
 
