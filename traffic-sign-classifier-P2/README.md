@@ -88,16 +88,16 @@ When tested I found accuracy of 77% for 9 images. 2 images were wrongly classifi
 
 ---
 | Description         		|     Actual value	        					|  Predicted value |
-|:---------------------:|:---------------------------------------------:| 
-| Roundabout mandatory         		| 40   							| 40 |
-| Speed limit (20km/h)         		| 0   							| 1 |
-| General caution         		| 18   							| 18 |
-| Keep right Actual        		| 38   							| 38 |
-| Speed limit (60km/h)         		| 3   							| 1 |
-| Stop Actual         		| 14   							| 14 |
-| Go straight or right Actual value         		| 36   							| 36 |
-| No entry Actual         		| 17   							| 17 |
-| Yield Actual        		| 13   							| 13 |
+|:---------------------:|:-----------------------------:|:----------------:|
+| Roundabout mandatory  | 40   							                  | 40            |
+| Speed limit (20km/h)  | 0   						                   	| 1             |
+| General caution       | 18   						                  	| 18            |
+| Keep right Actual     | 38   							                  | 38 |
+| Speed limit (60km/h)  | 3   							                   | 1 |
+| Stop Actual         		| 14   					                  		| 14 |
+| Go straight or right Actual value | 36   							   | 36    |
+| No entry Actual      	| 17   						                  	| 17 |
+| Yield Actual        		| 13   					                  		| 13 |
 
 
 As seen from above results both the spped limit signs were wrongly classified. Reason I guess is speed limit sign images from web are not correctly cropped and include background information as well.
